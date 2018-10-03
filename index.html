@@ -19,7 +19,47 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
       function loadData(desc) {
+        var result = document.getElementById('result');
+        var xmlhttp = new XMLHttpRequest();
 
+          function sortJSON(arr,array,rate){
+            for(var i = 0,len = arr.length; i < len;i++){
+              rate = arr[i].rate;
+              if(rate >= 4){
+               array.push(arr[i]);
+             }
+           }
+           array.sort(function(obj1, obj2){
+            if(desc){
+              return obj2.price-obj1.price;
+            }else{
+              return obj1.price-obj2.price;
+            }
+            
+          });
+           result.innerHTML = '<ul></ul>';
+           for(var k = 0,len = 3;k < len; k++){
+            var li = document.createElement('li');
+            li.innerHTML = array[k].title + " - " + array[k].price;
+            result.firstElementChild.appendChild(li);
+          }
+        };
+
+        xmlhttp.onreadystatechange = function() {
+          if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+            var arr =  xmlhttp.response.items;
+            var array = [];
+            var rate = null;
+            if(desc){
+              sortJSON(arr,array,rate,desc);
+            }else if(desc === false){
+              sortJSON(arr,array,rate,desc);
+            }
+          }
+        }
+      xmlhttp.open('get', 'data.json', true);
+      xmlhttp.responseType = 'json';
+      xmlhttp.send();
       }
     </script>
   </head>
